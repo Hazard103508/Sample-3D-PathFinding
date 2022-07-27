@@ -1,3 +1,4 @@
+using Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -57,23 +58,32 @@ namespace Map
             if (this.State == GameStates.Idle)
             {
                 Vector3 direction =
-                    Input.GetKey(KeyCode.D) ? Vector3.right :
-                    Input.GetKey(KeyCode.A) ? Vector3.left :
-                    Input.GetKey(KeyCode.W) ? Vector3.forward :
-                    Input.GetKey(KeyCode.S) ? Vector3.back :
+                    Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D) ? Vector3.right :
+                    Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.A) ? Vector3.left :
+                    Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.W) ? Vector3.forward :
+                    Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.S) ? Vector3.back :
                     Vector3.zero;
 
                 if (direction == Vector3.zero)
                     return;
 
                 var position = MainCharacter.transform.position + direction;
-                if (this.map.IsEmptyPosition(position))
+                if (this.map.IsEmptyPosition(position.ToVector3Int()))
                 {
                     this.State = GameStates.Moving;
                     MainCharacter.Move(direction);
+                    return;
                 }
-                
-                // mover la caja // ---
+
+                var box = this.map.GetBox(position);
+                position += direction;
+                if (box != null && this.map.IsEmptyPosition(position.ToVector3Int()))
+                {
+                    this.State = GameStates.Moving;
+                    MainCharacter.Move(direction);
+                    box.Move(direction);
+                    return;
+                }
             }
         }
 

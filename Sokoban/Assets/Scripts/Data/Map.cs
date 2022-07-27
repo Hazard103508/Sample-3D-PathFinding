@@ -8,17 +8,19 @@ namespace Data
     {
         public Map()
         {
-            this.Height = 1;
+            this.Height = 2;
             this.Width = 10;
             this.Depth = 6;
 
-            this.Tiles = new int[this.Height, this.Width, this.Depth];
+            this.Tiles = new int[this.Width, this.Height, this.Depth];
 
             for (int x = 0; x < this.Width; x++)
-                for (int y = 0; y < this.Depth; y++)
-                {
-                    Tiles[0, x, y] = 1;
-                }
+                for (int z = 0; z < this.Depth; z++)
+                    Tiles[x, 0, z] = 1;
+
+
+            Tiles[2, 1, 2] = 1;
+
 
             BoxLocations = new Vector3Int[]
             {

@@ -1,3 +1,4 @@
+using Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Map
             Load_Map();
             Load_Boxes();
             Load_Targets();
-            Load_Characters();
+            Load_Character();
 
             Loaded.Invoke(character);
         }
@@ -39,14 +40,19 @@ namespace Map
         }
 
         #region Public Methods
-        public bool IsEmptyPosition(Vector3 location)
+        public bool IsEmptyPosition(Vector3Int location)
         {
             return
                 location.x >= 0 &&
                 location.x < this.Data.Width &&
                 location.z >= 0 &&
                 location.z < this.Data.Depth &&
-                !boxes.Any(b => b.transform.position.x == location.x && b.transform.position.z == location.z);
+                !boxes.Any(b => b.transform.position.x == location.x && b.transform.position.z == location.z) &&
+                this.Data.Tiles[location.x, location.y, location.z] == 0;
+        }
+        public Box GetBox(Vector3 location)
+        {
+            return boxes.FirstOrDefault(b => b.transform.position.x == location.x && b.transform.position.z == location.z);
         }
         #endregion
 
@@ -59,15 +65,15 @@ namespace Map
             GameObject folder = new GameObject("Tiles");
             folder.transform.SetParent(transform);
 
-            for (int h = 0; h < this.Data.Height; h++)
-                for (int w = 0; w < this.Data.Width; w++)
-                    for (int d = 0; d < this.Data.Depth; d++)
+            for (int y = 0; y < this.Data.Height; y++)
+                for (int x = 0; x < this.Data.Width; x++)
+                    for (int z = 0; z < this.Data.Depth; z++)
                     {
-                        int tileIndex = this.Data.Tiles[h, w, d];
+                        int tileIndex = this.Data.Tiles[x, y, z];
                         if (tileIndex != 0)
                         {
                             GameObject tile = Instantiate(prefabs.tiles[tileIndex - 1], folder.transform);
-                            tile.transform.position = new Vector3(w, h, d);
+                            tile.transform.position = new Vector3(x, y, z);
                         }
                     }
         }
@@ -83,7 +89,7 @@ namespace Map
             Array.ForEach(this.Data.BoxLocations, loc =>
             {
                 GameObject obj = Instantiate(prefabs.box, folder.transform);
-                obj.transform.position = new Vector3(loc.x + obj.transform.position.x, loc.y + obj.transform.position.y, loc.z + obj.transform.position.z);
+                obj.transform.position += loc.ToVector3();
                 boxes.Add(obj.GetComponent<Box>());
             });
         }
@@ -98,19 +104,19 @@ namespace Map
             Array.ForEach(this.Data.TargetLocations, loc =>
             {
                 GameObject obj = Instantiate(prefabs.target, folder.transform);
-                obj.transform.position = new Vector3(loc.x + obj.transform.position.x, loc.y + obj.transform.position.y, loc.z + obj.transform.position.z);
+                obj.transform.position += loc.ToVector3();
             });
         }
         /// <summary>
         /// Carga los objetivos del mapa
         /// </summary>
-        private void Load_Characters()
+        private void Load_Character()
         {
             GameObject folder = new GameObject("Characters");
             folder.transform.SetParent(transform);
 
             GameObject obj = Instantiate(prefabs.character, folder.transform);
-            obj.transform.position = new Vector3(this.Data.CharacterLocations.x + obj.transform.position.x, this.Data.CharacterLocations.y + obj.transform.position.y, this.Data.CharacterLocations.z + obj.transform.position.z);
+            obj.transform.position += this.Data.CharacterLocations.ToVector3();
             character = obj.GetComponent<Character>();
 
         }
