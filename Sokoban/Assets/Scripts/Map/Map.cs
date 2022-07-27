@@ -10,21 +10,20 @@ namespace Map
     public class Map : MonoBehaviour
     {
         #region Objects
+        public Data.Map mapData;
         [SerializeField] private Prefabs prefabs;
+
         private Character character;
         private List<Box> boxes;
 
-        public MapLoadEvent Loaded = new MapLoadEvent();
+        [HideInInspector] public MapLoadEvent Loaded = new MapLoadEvent();
         #endregion
 
         #region Properties
-        public Data.Map Data { get; set; }
         #endregion
 
         void Start()
         {
-            Data = new Data.Map();
-
             Load_Map();
             Load_Boxes();
             Load_Targets();
@@ -44,11 +43,11 @@ namespace Map
         {
             return
                 location.x >= 0 &&
-                location.x < this.Data.Width &&
+                location.x < this.mapData.size.width &&
                 location.z >= 0 &&
-                location.z < this.Data.Depth &&
+                location.z < this.mapData.size.depth &&
                 !boxes.Any(b => b.transform.position.x == location.x && b.transform.position.z == location.z) &&
-                this.Data.Tiles[location.x, location.y, location.z] == 0;
+                this.mapData.getTile(location.x, location.y, location.z) == 0;
         }
         public Box GetBox(Vector3 location)
         {
@@ -65,11 +64,11 @@ namespace Map
             GameObject folder = new GameObject("Tiles");
             folder.transform.SetParent(transform);
 
-            for (int y = 0; y < this.Data.Height; y++)
-                for (int x = 0; x < this.Data.Width; x++)
-                    for (int z = 0; z < this.Data.Depth; z++)
+            for (int y = 0; y < this.mapData.size.height; y++)
+                for (int x = 0; x < this.mapData.size.width; x++)
+                    for (int z = 0; z < this.mapData.size.depth; z++)
                     {
-                        int tileIndex = this.Data.Tiles[x, y, z];
+                        int tileIndex = this.mapData.getTile(x, y, z);
                         if (tileIndex != 0)
                         {
                             GameObject tile = Instantiate(prefabs.tiles[tileIndex - 1], folder.transform);
@@ -86,7 +85,7 @@ namespace Map
             GameObject folder = new GameObject("Boxes");
             folder.transform.SetParent(transform);
 
-            Array.ForEach(this.Data.BoxLocations, loc =>
+            Array.ForEach(this.mapData.boxLocations, loc =>
             {
                 GameObject obj = Instantiate(prefabs.box, folder.transform);
                 obj.transform.position += loc.ToVector3();
@@ -101,7 +100,7 @@ namespace Map
             GameObject folder = new GameObject("Targets");
             folder.transform.SetParent(transform);
 
-            Array.ForEach(this.Data.TargetLocations, loc =>
+            Array.ForEach(this.mapData.targetLocations, loc =>
             {
                 GameObject obj = Instantiate(prefabs.target, folder.transform);
                 obj.transform.position += loc.ToVector3();
@@ -116,7 +115,7 @@ namespace Map
             folder.transform.SetParent(transform);
 
             GameObject obj = Instantiate(prefabs.character, folder.transform);
-            obj.transform.position += this.Data.CharacterLocations.ToVector3();
+            obj.transform.position += this.mapData.characterLocation.ToVector3();
             character = obj.GetComponent<Character>();
 
         }

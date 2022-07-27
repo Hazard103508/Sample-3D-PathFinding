@@ -8,6 +8,5 @@ namespace Map
 {
     public class Character : MapObject
     {
-
     }
 }
