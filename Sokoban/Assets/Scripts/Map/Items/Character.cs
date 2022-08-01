@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace Map
+namespace Map.Items
 {
-    public class Character : MapObject
+    public class Character : BaseItem
     {
     }
 }

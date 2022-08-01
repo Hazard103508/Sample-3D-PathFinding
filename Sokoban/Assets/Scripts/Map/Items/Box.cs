@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Map
+namespace Map.Items
 {
-    public class Box : MapObject
+    public class Box : BaseItem
     { 
     }
 }

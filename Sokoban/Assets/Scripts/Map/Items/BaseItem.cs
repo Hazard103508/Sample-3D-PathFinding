@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Map
+namespace Map.Items
 {
-    public class MapObject : MonoBehaviour
+    public class BaseItem : MonoBehaviour
     {
         #region Events
         public UnityEvent Moved;

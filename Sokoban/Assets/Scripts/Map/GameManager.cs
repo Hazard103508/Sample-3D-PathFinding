@@ -1,4 +1,5 @@
 using Extensions;
+using Map.Items;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -10,6 +11,7 @@ namespace Map
     {
         #region Objects
         [SerializeField] private Map map;
+        [SerializeField] private Transform cameraPivot;
         #endregion
 
         #region Properties
@@ -31,7 +33,8 @@ namespace Map
         }
         private void Update()
         {
-            Move_Character();
+            //Move_Character();
+            Rotate_Camera();
         }
         #endregion
 
@@ -87,7 +90,15 @@ namespace Map
                 }
             }
         }
+        private void Rotate_Camera()
+        {
+            float _rotation = 90;
+            if (Input.GetKey(KeyCode.D))
+                cameraPivot.transform.Rotate(Vector3.up * _rotation * Time.deltaTime, Space.World);
+            else if (Input.GetKey(KeyCode.A))
+                cameraPivot.transform.Rotate(Vector3.up * -_rotation * Time.deltaTime, Space.World);
 
+        }
         #endregion
 
         #region Structures
