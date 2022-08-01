@@ -25,6 +25,8 @@ namespace Map.PathFinding
                 Directions.Forward,
                 Directions.Left,
                 Directions.Right,
+                Directions.Up,
+                Directions.Down,
             };
         }
         #endregion
@@ -33,7 +35,7 @@ namespace Map.PathFinding
         /// <summary>
         /// Matriz con las celdas a analizar
         /// </summary>
-        public bool[,,] Matrix { get; set; }
+        private bool[,,] Matrix { get; set; }
         /// <summary>
         /// Tamaño de la grilla a analizar
         /// </summary>
@@ -72,6 +74,10 @@ namespace Map.PathFinding
                 _path.RemoveAt(0); // quita el punto inicial (punto donde se encuentra el personaje)
 
             return _path;
+        }
+        public void SetObstacle(Vector3Int location, bool isObstacle)
+        {
+            Matrix[location.x, location.y, location.z] = isObstacle;
         }
         /// <summary>
         /// metodo que obtiene el mejor camino para llegar de un punto a otro

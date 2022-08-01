@@ -1030,6 +1030,19 @@ MonoBehaviour:
   onMouseExit:
     m_PersistentCalls:
       m_Calls: []
-  MouseEnter:
+  onMouseEnter:
     m_PersistentCalls:
       m_Calls: []
+  selectedObject:
+  - {fileID: 382763052418988427}
+  - {fileID: 382763051138130157}
+  - {fileID: 382763052344029670}
+  - {fileID: 382763052701404058}
+  - {fileID: 382763052341629226}
+  - {fileID: 382763051696696269}
+  - {fileID: 382763051466685426}
+  - {fileID: 382763051651448929}
+  - {fileID: 382763051402736055}
+  - {fileID: 382763052902003122}
+  colorNormal: {r: 0.28235295, g: 0.14117648, b: 0, a: 1}
+  colorSelected: {r: 0, g: 1, b: 0.25490198, a: 1}

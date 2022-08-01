@@ -26,7 +26,7 @@ namespace Map
         void Start()
         {
             Load_Map();
-            Load_Boxes();
+            //Load_Boxes();
             Load_Targets();
             Load_Character();
 
@@ -66,7 +66,7 @@ namespace Map
             folder.transform.SetParent(transform);
 
             _tiles = new Dictionary<Vector3, Tiles.BaseTile>();
-            bool[,,] obstacleMatrix = new bool[this.mapData.size.width, this.mapData.size.height,  this.mapData.size.depth];
+            bool[,,] obstacleMatrix = new bool[this.mapData.size.width, this.mapData.size.height, this.mapData.size.depth];
 
             for (int y = 0; y < this.mapData.size.height; y++)
                 for (int x = 0; x < this.mapData.size.width; x++)
@@ -81,7 +81,7 @@ namespace Map
                             obj.transform.Rotate(_tileData.rotation);
                             var _tile = obj.GetComponent<Tiles.BaseTile>();
                             _tiles.Add(_tile.transform.position, _tile);
-                            obstacleMatrix[(int)_tile.transform.position.x, (int)_tile.transform.position.y, (int)_tile.transform.position.z] = true;
+                            obstacleMatrix[(int)x, (int)y, (int)z] = true;
 
                             //_tile.onSelected.AddListener(OnTileSelected);
                             _tile.onMouseEnter.AddListener(onTileMouseEnter);
@@ -105,6 +105,8 @@ namespace Map
                 GameObject obj = Instantiate(tileset.box, folder.transform);
                 obj.transform.position += loc.ToVector3();
                 _boxes.Add(obj.GetComponent<Box>());
+
+                _pathFinder.SetObstacle(loc, true);
             });
         }
         /// <summary>
@@ -142,11 +144,17 @@ namespace Map
         {
             var targetLocation = tile.transform.position + Vector3.up; // el tile seleccionado esta al nivel del suelo, se le aumenta un y+1 para validar que el persona pueda pararse sobre dicho tile
             var _paths = _pathFinder.FindPath(this.player.transform.position.ToVector3Int(), targetLocation.ToVector3Int());
+            if (!_paths.Any())
+                _paths = new List<Vector3>() { targetLocation };
             HighlightPath(_paths);
         }
         private void onTileMouseExit(Tiles.BaseTile tile)
         {
-            Array.ForEach(_highlightTiles, tile => tile.Highlighted = false);
+            Array.ForEach(_highlightTiles, tile =>
+            {
+                if (tile != null)
+                    tile.Highlighted = false;
+            });
             _highlightTiles = null;
         }
         private void HighlightPath(List<Vector3> paths)
@@ -154,8 +162,12 @@ namespace Map
             _highlightTiles = new Tiles.BaseTile[paths.Count];
             for (int i = 0; i < _highlightTiles.Length; i++)
             {
-                _highlightTiles[i] = _tiles[paths[i] + Vector3.down];
-                _highlightTiles[i].Highlighted = true;
+                var location = paths[i] + Vector3.down;
+                if (_tiles.ContainsKey(location))
+                {
+                    _highlightTiles[i] = _tiles[location]; // pinto los tiles del piso de abajo
+                    _highlightTiles[i].Highlighted = true;
+                }
             }
         }
         #endregion
