@@ -14,25 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   box: {fileID: 4960037849101135368, guid: 515e1ccd68366ed4080ba4f44e197a8d, type: 3}
   target: {fileID: 5092687801459287650, guid: ca6274850516f164a840572fe03cff50, type: 3}
-  character: {fileID: 4103933129366675811, guid: f2996f9dac5633b4bb4ff8b56d4ca386, type: 3}
   tiles:
   - id: 1
     type: 0
     prefab: {fileID: 3357423363390638195, guid: b011c4bce9908c942800b7cfcb1f9539, type: 3}
-    rotation: {x: 0, y: 0, z: 0}
   - id: 2
-    type: 1
-    prefab: {fileID: 3675004048398990948, guid: e824581d0710baa499beda906aebf81d, type: 3}
-    rotation: {x: 0, y: 0, z: 0}
+    type: 0
+    prefab: {fileID: 3357423363390638195, guid: 33d5654f26348494292e686515e30808, type: 3}
   - id: 3
     type: 1
     prefab: {fileID: 3675004048398990948, guid: e824581d0710baa499beda906aebf81d, type: 3}
-    rotation: {x: 0, y: 90, z: 0}
   - id: 4
     type: 1
-    prefab: {fileID: 3675004048398990948, guid: e824581d0710baa499beda906aebf81d, type: 3}
-    rotation: {x: 0, y: 180, z: 0}
+    prefab: {fileID: 3675004048398990948, guid: a2708df5b7a986a419ca761ddc003eec, type: 3}
   - id: 5
     type: 1
-    prefab: {fileID: 3675004048398990948, guid: e824581d0710baa499beda906aebf81d, type: 3}
-    rotation: {x: 0, y: 270, z: 0}
+    prefab: {fileID: 3675004048398990948, guid: 2c73a1cef7b1a8f4595f0b12df470e1c, type: 3}
+  - id: 6
+    type: 1
+    prefab: {fileID: 3675004048398990948, guid: 6986210d91973f845a58b73f1582d772, type: 3}

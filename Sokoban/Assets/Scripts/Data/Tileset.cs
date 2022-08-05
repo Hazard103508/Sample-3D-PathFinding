@@ -18,7 +18,6 @@ namespace Data
         public int id;
         public TileType type;
         public GameObject prefab;
-        public Vector3 rotation;
     }
     public enum TileType
     {

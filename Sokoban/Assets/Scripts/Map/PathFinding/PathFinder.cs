@@ -17,6 +17,7 @@ namespace Map.PathFinding
         {
             this.Matrix = matrix;
             this.Grid_Size = new Vector3Int(matrix.GetLength(0), matrix.GetLength(1), matrix.GetLength(2));
+            this.StairsLocations = new Dictionary<Vector3Int, Tiles.Stair>();
 
             //Direcciones que puede moverse el personaje
             surrounding = new Directions[]
@@ -25,8 +26,14 @@ namespace Map.PathFinding
                 Directions.Forward,
                 Directions.Left,
                 Directions.Right,
-                Directions.Up,
-                Directions.Down,
+                new Directions(Vector3Int.up + Vector3Int.right),
+                new Directions(Vector3Int.up + Vector3Int.left),
+                new Directions(Vector3Int.up + Vector3Int.forward),
+                new Directions(Vector3Int.up + Vector3Int.back),
+                new Directions(Vector3Int.down + Vector3Int.right),
+                new Directions(Vector3Int.down + Vector3Int.left),
+                new Directions(Vector3Int.down + Vector3Int.forward),
+                new Directions(Vector3Int.down + Vector3Int.back),
             };
         }
         #endregion
@@ -40,6 +47,10 @@ namespace Map.PathFinding
         /// Tamaño de la grilla a analizar
         /// </summary>
         private Vector3Int Grid_Size { get; set; }
+        /// <summary>
+        /// Posicion de las escaleras en el mapa
+        /// </summary>
+        public Dictionary<Vector3Int, Tiles.Stair> StairsLocations { get; set; }
         #endregion
 
         #region Methods
@@ -99,24 +110,73 @@ namespace Map.PathFinding
 
                 float distance = Vector3.Distance(current.Position, end);
                 if (distance == 1) // si la distancia es 1, se asume que el destino se encuentra en una celda a la izquierda, derecha, arriba o abajo
-                    return new SearchNode(end, current.PathCost + distance, current.Cost + distance, current);
+                {
+                    if (IsValidStairPosition(current.Position, end))
+                        return new SearchNode(end, current.PathCost + distance, current.Cost + distance, current);
+                }
+                else if (distance < 2 && current.Position.y != end.y) // si la distancia es menor a 2 se asume que la distancia esta a una casilla en diagonal
+                {
+                    Vector3Int _stairLocation = Vector3Int.zero;
+                    Vector3Int _endPoint = Vector3Int.zero;
+                    if (end.y - current.Position.y > 0)
+                    {
+                        _stairLocation = end + Vector3Int.down;
+                        _endPoint = current.Position;
+                    }
+                    else
+                    {
+                        _stairLocation = current.Position + Vector3Int.down;
+                        _endPoint = end;
+                    }
+
+                    var _stair = StairsLocations.ContainsKey(_stairLocation) ? StairsLocations[_stairLocation] : null;
+                    if (_stair != null)
+                    {
+                        if (_stair.entryPointA == _endPoint || _stair.entryPointB == _endPoint)
+                            return new SearchNode(end, current.PathCost + distance, current.Cost + distance, current);
+                    }
+                }
 
                 // recorre todas las direcciones disponibles
                 for (int i = 0; i < surrounding.Length; i++)
                 {
                     Directions surr = surrounding[i];
-                    Vector3Int location = current.Position + surr.Direction;  //new Vector3(current.Position.X + surr.Point.X, current.Position.Y + surr.Point.Y);
+                    Vector3Int location = current.Position + surr.Direction;
 
                     if (IsOutofRange(location) || lstBlock[location.x, location.y, location.z])
                         continue; // si los destinos estan fuera de rango los continua con el analisis de las demas celdas cercanas
 
                     // valida si la posicion destino esta bloqueada
                     bool _detinoBlock = IsTileBlocked(location);
-                    bool _side2 = IsTileBlocked(new Vector3Int(current.Position.x, current.Position.y + surr.Direction.y)); // valida las celdas laterales en caso de realizar un desplazamiento en diagonal
-                    bool _side1 = IsTileBlocked(new Vector3Int(current.Position.x + surr.Direction.x, current.Position.y));
 
-                    if (!_detinoBlock && !_side2 && !_side1)
+                    if (!_detinoBlock)
                     {
+                        if (!IsValidStairPosition(current.Position, location))
+                            continue;
+
+                        if (surr.Direction.magnitude > 1) // movimiento diagonal hacia arriba o abajo
+                        {
+                            Vector3Int _stairLocation = Vector3Int.zero;
+                            Vector3Int _endPoint = Vector3Int.zero;
+                            if (surr.Direction.y > 0)
+                            {
+                                _stairLocation = location + Vector3Int.down;
+                                _endPoint = current.Position;
+                            }
+                            else
+                            {
+                                _stairLocation = current.Position + Vector3Int.down;
+                                _endPoint = location;
+                            }
+
+                            var _stair = StairsLocations.ContainsKey(_stairLocation) ? StairsLocations[_stairLocation] : null;
+                            if (_stair == null)
+                                continue; // no se encontro escalera
+
+                            if (_stair.entryPointA != _endPoint && _stair.entryPointB != _endPoint)
+                                continue; // el personaje debe estar paradado en uno de los puntos de entrad de la escalera
+                        }
+
                         float pathCost = current.PathCost + surr.Cost;
                         float cost = pathCost + Vector3.Distance(location, end);
                         SearchNode node = new SearchNode(location, cost, pathCost, current);
@@ -130,6 +190,26 @@ namespace Map.PathFinding
                 }
             }
             return null; //no path found
+        }
+        private bool IsValidStairPosition(Vector3Int current, Vector3Int destiny)
+        {
+            var _stairLocation = current + Vector3Int.down;
+            var _stair = StairsLocations.ContainsKey(_stairLocation) ? StairsLocations[_stairLocation] : null;
+            if (_stair != null) // si me encuentro parado sobre la escalera solo puedo salir por uno de los extremos
+            {
+                if (_stair.entryPointA != destiny && _stair.entryPointB != destiny)
+                    return false;
+            }
+
+            _stairLocation = destiny + Vector3Int.down;
+            _stair = StairsLocations.ContainsKey(_stairLocation) ? StairsLocations[_stairLocation] : null;
+            if (_stair != null) // si voy a entrar en la escalera debe ser por uno de los extremos
+            {
+                if (_stair.entryPointA != current && _stair.entryPointB != current)
+                    return false;
+            }
+
+            return true;
         }
         /// <summary>
         /// Determina si la coordenada indicada esta bloqueada para el desplazamiento del elemento
@@ -159,7 +239,7 @@ namespace Map.PathFinding
 
         internal class Directions
         {
-            private Directions(Vector3Int vector)
+            public Directions(Vector3Int vector)
             {
                 Direction = new Vector3Int(vector.x, vector.y, vector.z);
                 Cost = (float)Math.Sqrt(Math.Abs(vector.x) + Math.Abs(vector.y)); // aplico pitagoras para obtener la distancia entre 2 puntos (valor absoluto en este caso)

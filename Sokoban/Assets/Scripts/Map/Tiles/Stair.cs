@@ -7,6 +7,9 @@ namespace Map.Tiles
 {
     public class Stair : BaseTile
     {
+        public Vector3Int entryPointA;
+        public Vector3Int entryPointB;
+
         // ---------------------------TESTING
         public GameObject[] selectedObject;
         public Color colorNormal;

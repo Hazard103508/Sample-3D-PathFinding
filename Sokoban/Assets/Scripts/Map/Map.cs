@@ -27,7 +27,7 @@ namespace Map
         {
             Load_Map();
             //Load_Boxes();
-            Load_Targets();
+            //Load_Targets();
             Load_Character();
 
             Loaded.Invoke(player);
@@ -68,6 +68,7 @@ namespace Map
             _tiles = new Dictionary<Vector3, Tiles.BaseTile>();
             bool[,,] obstacleMatrix = new bool[this.mapData.size.width, this.mapData.size.height, this.mapData.size.depth];
 
+            var _stairs = new Dictionary<Vector3Int, Tiles.Stair>();
             for (int y = 0; y < this.mapData.size.height; y++)
                 for (int x = 0; x < this.mapData.size.width; x++)
                     for (int z = 0; z < this.mapData.size.depth; z++)
@@ -78,18 +79,30 @@ namespace Map
                             var _tileData = tileset.tiles[tileIndex - 1];
                             GameObject obj = Instantiate(_tileData.prefab, folder.transform);
                             obj.transform.position = new Vector3(x, y, z);
-                            obj.transform.Rotate(_tileData.rotation);
                             var _tile = obj.GetComponent<Tiles.BaseTile>();
                             _tiles.Add(_tile.transform.position, _tile);
-                            obstacleMatrix[(int)x, (int)y, (int)z] = true;
 
-                            //_tile.onSelected.AddListener(OnTileSelected);
+                            if (_tileData.type == Data.TileType.Stair)
+                            {
+                                var _position = new Vector3Int(x, y, z);
+                                var _stair = obj.GetComponent<Tiles.Stair>();
+                                _stair.entryPointA += _position;
+                                _stair.entryPointB += _position;
+                                _stairs.Add(_position, _stair);
+                            }
+
+                            _tile.onSelected.AddListener(OnTileSelected);
                             _tile.onMouseEnter.AddListener(onTileMouseEnter);
                             _tile.onMouseExit.AddListener(onTileMouseExit);
+
+                            obstacleMatrix[x,y,z] = true;
                         }
+                        else
+                            obstacleMatrix[x, y, z] = y > 0 && !obstacleMatrix[x, y - 1, z]; // bloque las celdas que no tienen piso en el nivel inferior
                     }
 
             _pathFinder = new PathFinding.PathFinder(obstacleMatrix);
+            _pathFinder.StairsLocations = _stairs;
         }
         /// <summary>
         /// Carga las cajas en el mapa
@@ -135,10 +148,7 @@ namespace Map
         #region Tiles Methods
         private void OnTileSelected(Vector3 tilePosition)
         {
-            //var targetLocation = tilePosition + Vector3.up;
-            //var _path = _pathFinder.FindPath(this.player.transform.position.ToVector3Int(), targetLocation.ToVector3Int());
-            ////_path.ForEach(location => print(location)); //_tiles[location].Highlighted = true);
-            //_path.ForEach(location => _tiles[location + Vector3.down].Highlighted = true);
+            this.player.transform.position =  tilePosition + Vector3.up; // test
         }
         private void onTileMouseEnter(Tiles.BaseTile tile)
         {
