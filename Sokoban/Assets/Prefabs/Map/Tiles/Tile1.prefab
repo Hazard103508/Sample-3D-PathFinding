@@ -219,12 +219,12 @@ MonoBehaviour:
   onMouseExit:
     m_PersistentCalls:
       m_Calls: []
-  MouseEnter:
+  onMouseEnter:
     m_PersistentCalls:
       m_Calls: []
   grass: {fileID: 3357423363063203982}
   colorNormal: {r: 0.105882354, g: 0.59607846, b: 0.08627451, a: 1}
-  colorSelected: {r: 0, g: 1, b: 0.25344753, a: 1}
+  colorSelected: {r: 0, g: 0.38864926, b: 0.990566, a: 1}
 --- !u!65 &7421326436385239494
 BoxCollider:
   m_ObjectHideFlags: 0

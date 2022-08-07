@@ -23,7 +23,8 @@ namespace Map
         [HideInInspector] public UnityEvent<Character> Loaded;
         #endregion
 
-        void Start()
+        #region Unity Methods
+        private void Start()
         {
             Load_Map();
             //Load_Boxes();
@@ -32,12 +33,11 @@ namespace Map
 
             Loaded.Invoke(player);
         }
-
-        // Update is called once per frame
-        void Update()
+        private void Update()
         {
 
         }
+        #endregion
 
         #region Public Methods
         public bool IsEmptyPosition(Vector3Int location)
@@ -95,7 +95,7 @@ namespace Map
                             _tile.onMouseEnter.AddListener(onTileMouseEnter);
                             _tile.onMouseExit.AddListener(onTileMouseExit);
 
-                            obstacleMatrix[x,y,z] = true;
+                            obstacleMatrix[x, y, z] = true;
                         }
                         else
                             obstacleMatrix[x, y, z] = y > 0 && !obstacleMatrix[x, y - 1, z]; // bloque las celdas que no tienen piso en el nivel inferior
@@ -148,7 +148,7 @@ namespace Map
         #region Tiles Methods
         private void OnTileSelected(Vector3 tilePosition)
         {
-            this.player.transform.position =  tilePosition + Vector3.up; // test
+            this.player.transform.position = tilePosition + Vector3.up; // test
         }
         private void onTileMouseEnter(Tiles.BaseTile tile)
         {

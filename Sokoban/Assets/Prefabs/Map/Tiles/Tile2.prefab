@@ -224,7 +224,7 @@ MonoBehaviour:
       m_Calls: []
   grass: {fileID: 3357423363063203982}
   colorNormal: {r: 1, g: 0.3764706, b: 0.018689938, a: 1}
-  colorSelected: {r: 1, g: 0.64705884, b: 0.019607844, a: 1}
+  colorSelected: {r: 0, g: 0.38864926, b: 0.990566, a: 1}
 --- !u!65 &7421326436385239494
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -1047,4 +1047,4 @@ MonoBehaviour:
   - {fileID: 382763051402736055}
   - {fileID: 382763052902003122}
   colorNormal: {r: 0.28235295, g: 0.14117648, b: 0, a: 1}
-  colorSelected: {r: 0, g: 1, b: 0.25490198, a: 1}
+  colorSelected: {r: 0, g: 0.3882353, b: 0.99215686, a: 1}
