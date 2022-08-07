@@ -34,7 +34,6 @@ namespace Map
         private void Update()
         {
             //Move_Character();
-            Rotate_Camera();
         }
         #endregion
 
@@ -89,15 +88,6 @@ namespace Map
             //        return;
             //    }
             //}
-        }
-        private void Rotate_Camera()
-        {
-            float _rotation = 90;
-            if (Input.GetKey(KeyCode.D))
-                cameraPivot.transform.Rotate(Vector3.up * _rotation * Time.deltaTime, Space.World);
-            else if (Input.GetKey(KeyCode.A))
-                cameraPivot.transform.Rotate(Vector3.up * -_rotation * Time.deltaTime, Space.World);
-
         }
         #endregion
 
