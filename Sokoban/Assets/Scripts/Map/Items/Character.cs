@@ -20,16 +20,20 @@ namespace Map.Items
         #endregion
 
         #region Public Methods
-        public void Move(Vector3Int direction)
+        public void Move(Vector3Int direction, bool isOnStair, bool nextIsDownStair, bool nextIsUpStair)
         {
             base.IsMoving = true;
 
-            if (direction.y == 0)
-            {
-                animator.SetFloat("x", direction.x);
-                animator.SetFloat("z", direction.z);
-                animator.SetTrigger("MoveXZ");
-            }
+            animator.SetFloat("x", direction.x);
+            animator.SetFloat("z", direction.z);
+
+            string trigger =
+                !isOnStair && nextIsDownStair ? "MoveStartDown" :
+                isOnStair && !nextIsDownStair ? "MoveEndDown" :
+                "MoveNormal";
+
+            animator.SetTrigger(trigger);
+
         }
         public void Move_Competed() => base.IsMoving = false;
         #endregion

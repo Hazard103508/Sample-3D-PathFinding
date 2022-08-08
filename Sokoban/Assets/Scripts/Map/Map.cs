@@ -205,19 +205,27 @@ namespace Map
         private IEnumerator Move_Character()
         {
             characterIsMoving = true;
+            Vector3Int _lastLocation = this.character.transform.position.ToVector3Int();
             while (_path.Any())
             {
+                var _characterPosition = _lastLocation;
                 var _location = _path[0];
-                var _direction = _location - this.character.transform.position.ToVector3Int();
+                var _direction = _location - _characterPosition;
 
-                this.character.Move(_direction);
+                bool _isOnStair = _pathFinder.StairsLocations.ContainsKey(_characterPosition + Vector3Int.down);
+                bool _isNextStairDown = _pathFinder.StairsLocations.ContainsKey(_location + Vector3Int.down);
+                bool _isNextStairUp = _pathFinder.StairsLocations.ContainsKey(_location);
+
+                this.character.Move(_direction, _isOnStair, _isNextStairDown, _isNextStairUp);
+
                 _path.Remove(_location);
-
                 yield return new WaitUntil(() => !this.character.IsMoving);
 
-                this.character.transform.position = _location;
+                this.character.transform.position = new Vector3(Mathf.Round(this.character.transform.position.x), (float)Math.Round(this.character.transform.position.y, 1), Mathf.Round(this.character.transform.position.z));
                 _highlightTiles[0].Highlighted = false;
                 _highlightTiles.RemoveAt(0);
+
+                _lastLocation = _location;
 
             }
             characterIsMoving = false;
