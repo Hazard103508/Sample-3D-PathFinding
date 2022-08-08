@@ -10,7 +10,7 @@ namespace Map
 
         void Update()
         {
-            transform.position = character.transform.position;
+            //transform.position = character.transform.position;
             Rotate_Camera();
         }
 

@@ -1,6 +1,7 @@
 using Extensions;
 using Map.Items;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,14 +12,17 @@ namespace Map
     public class Map : MonoBehaviour
     {
         #region Objects
-        [SerializeField] private Character player;
+        [SerializeField] private Character character;
         [SerializeField] private Data.Map mapData;
         [SerializeField] private Data.Tileset tileset;
 
         private PathFinding.PathFinder _pathFinder;
         private List<Box> _boxes;
         private Dictionary<Vector3, Tiles.BaseTile> _tiles;
-        private Tiles.BaseTile[] _highlightTiles;
+        private List<Vector3Int> _path;
+        private List<Tiles.BaseTile> _highlightTiles;
+        private bool characterIsMoving;
+        private Tiles.BaseTile _nextPathTile;
 
         [HideInInspector] public UnityEvent<Character> Loaded;
         #endregion
@@ -31,7 +35,7 @@ namespace Map
             //Load_Targets();
             Load_Character();
 
-            Loaded.Invoke(player);
+            Loaded.Invoke(character);
         }
         private void Update()
         {
@@ -141,44 +145,85 @@ namespace Map
         /// </summary>
         private void Load_Character()
         {
-            player.transform.position += this.mapData.characterLocation.ToVector3();
+            character.transform.position += this.mapData.characterLocation.ToVector3();
         }
         #endregion
 
         #region Tiles Methods
         private void OnTileSelected(Vector3 tilePosition)
         {
-            this.player.transform.position = tilePosition + Vector3.up; // test
+            if (!characterIsMoving)
+                StartCoroutine(Move_Character());
         }
         private void onTileMouseEnter(Tiles.BaseTile tile)
         {
-            var targetLocation = tile.transform.position + Vector3.up; // el tile seleccionado esta al nivel del suelo, se le aumenta un y+1 para validar que el persona pueda pararse sobre dicho tile
-            var _paths = _pathFinder.FindPath(this.player.transform.position.ToVector3Int(), targetLocation.ToVector3Int());
-            if (!_paths.Any())
-                _paths = new List<Vector3>() { targetLocation };
-            HighlightPath(_paths);
+            if (characterIsMoving)
+            {
+                _nextPathTile = tile;
+                return;
+            }
+
+            Vector3Int targetLocation = tile.transform.position.ToVector3Int() + Vector3Int.up; // el tile seleccionado esta al nivel del suelo, se le aumenta un y+1 para validar que el persona pueda pararse sobre dicho tile
+            _path = _pathFinder.FindPath(this.character.transform.position.ToVector3Int(), targetLocation);
+            if (!_path.Any())
+                _path = new List<Vector3Int> { targetLocation };
+
+            HighlightPath();
         }
         private void onTileMouseExit(Tiles.BaseTile tile)
         {
-            Array.ForEach(_highlightTiles, tile =>
+            if (characterIsMoving)
+                return;
+
+            _highlightTiles.ForEach(tile =>
             {
                 if (tile != null)
                     tile.Highlighted = false;
             });
             _highlightTiles = null;
         }
-        private void HighlightPath(List<Vector3> paths)
+        private void HighlightPath()
         {
-            _highlightTiles = new Tiles.BaseTile[paths.Count];
-            for (int i = 0; i < _highlightTiles.Length; i++)
+            if (_path == null || !_path.Any())
+                return;
+
+            _highlightTiles = new List<Tiles.BaseTile>();
+            for (int i = 0; i < _path.Count; i++)
             {
-                var location = paths[i] + Vector3.down;
+                var location = _path[i] + Vector3.down;
                 if (_tiles.ContainsKey(location))
                 {
-                    _highlightTiles[i] = _tiles[location]; // pinto los tiles del piso de abajo
-                    _highlightTiles[i].Highlighted = true;
+                    var _tile = _tiles[location];
+                    _tile.Highlighted = true;
+                    _highlightTiles.Add(_tile); // pinto los tiles del piso de abajo
                 }
             }
+        }
+        #endregion
+
+        #region Character Methods
+        private IEnumerator Move_Character()
+        {
+            characterIsMoving = true;
+            while (_path.Any())
+            {
+                var _location = _path[0];
+                var _direction = _location - this.character.transform.position.ToVector3Int();
+
+                this.character.Move(_direction);
+                _path.Remove(_location);
+
+                yield return new WaitUntil(() => !this.character.IsMoving);
+
+                this.character.transform.position = _location;
+                _highlightTiles[0].Highlighted = false;
+                _highlightTiles.RemoveAt(0);
+
+            }
+            characterIsMoving = false;
+
+            if (_nextPathTile != null)
+                onTileMouseEnter(_nextPathTile);
         }
         #endregion
     }

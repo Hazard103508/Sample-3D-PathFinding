@@ -45,7 +45,7 @@ namespace Map
         private void OnMapLoaded(Character character)
         {
             this.MainCharacter = character;
-            this.MainCharacter.Moved.AddListener(OnCharacterMoved);
+            //this.MainCharacter.Moved.AddListener(OnCharacterMoved);
 
             State = GameStates.Idle;
         }
@@ -96,7 +96,7 @@ namespace Map
         {
             Loading,
             Idle,
-            Moving
+            MovingCharacter
         }
         #endregion
     }

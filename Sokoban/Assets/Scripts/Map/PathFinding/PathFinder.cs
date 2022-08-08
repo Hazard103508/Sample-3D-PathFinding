@@ -60,9 +60,9 @@ namespace Map.PathFinding
         /// <param name="start">Punto de partida del recorrido</param>
         /// <param name="end">Punto final del recorrido</param>
         /// <returns></returns>        
-        public List<Vector3> FindPath(Vector3Int start, Vector3Int end)
+        public List<Vector3Int> FindPath(Vector3Int start, Vector3Int end)
         {
-            var _path = new List<Vector3>();
+            var _path = new List<Vector3Int>();
 
             if (IsTileBlocked(end)) // si el punto destino esta bloqueado no analiza el recorrido
                 return _path;

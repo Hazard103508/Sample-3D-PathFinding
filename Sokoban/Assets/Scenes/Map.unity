@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89fa98fa676cb8c40b83f673f8231f81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1672392294}
+  character: {fileID: 1672392294}
   mapData: {fileID: 11400000, guid: 9c895ba345f12624eadb1e19fa46182e, type: 2}
   tileset: {fileID: 11400000, guid: decd556b1fa8507428034717257e3c52, type: 2}
   Loaded:
@@ -511,7 +511,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4907534535539765024, guid: f2996f9dac5633b4bb4ff8b56d4ca386, type: 3}
   m_PrefabInstance: {fileID: 257680919}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2013199143}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 714ee85dc6c0dcc4f8b1aaf50a1a41e3, type: 3}
@@ -522,3 +522,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4103933129366675810, guid: f2996f9dac5633b4bb4ff8b56d4ca386, type: 3}
   m_PrefabInstance: {fileID: 257680919}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2013199143 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4103933129366675811, guid: f2996f9dac5633b4bb4ff8b56d4ca386, type: 3}
+  m_PrefabInstance: {fileID: 257680919}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2013199144
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013199143}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 322f716ca5d556648b8c8758e099e63d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
