@@ -213,10 +213,9 @@ namespace Map
                 var _direction = _location - _characterPosition;
 
                 bool _isOnStair = _pathFinder.StairsLocations.ContainsKey(_characterPosition + Vector3Int.down);
-                bool _isNextStairDown = _pathFinder.StairsLocations.ContainsKey(_location + Vector3Int.down);
-                bool _isNextStairUp = _pathFinder.StairsLocations.ContainsKey(_location);
+                bool _isNextStair = _pathFinder.StairsLocations.ContainsKey(_location + Vector3Int.down);
 
-                this.character.Move(_direction, _isOnStair, _isNextStairDown, _isNextStairUp);
+                this.character.Move(_direction, _isOnStair, _isNextStair);
 
                 _path.Remove(_location);
                 yield return new WaitUntil(() => !this.character.IsMoving);

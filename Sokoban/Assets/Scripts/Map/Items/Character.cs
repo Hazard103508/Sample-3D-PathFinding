@@ -20,19 +20,23 @@ namespace Map.Items
         #endregion
 
         #region Public Methods
-        public void Move(Vector3Int direction, bool isOnStair, bool nextIsDownStair, bool nextIsUpStair)
+        public void Move(Vector3Int direction, bool isOnStair, bool nextIsStair)
         {
             base.IsMoving = true;
 
+            float y =
+                direction.y == 0 && !isOnStair && nextIsStair ? -1 : // comienza a bajar la escalera
+                direction.y == -1 && isOnStair && !nextIsStair ? -2 : // termina de bajar la escalera
+                direction.y == 1 && !isOnStair && nextIsStair ? 1 : // comienza a subur la escalera
+                direction.y == 0 && isOnStair && !nextIsStair ? 2 : // termina a subur la escalera
+                0;
+
             animator.SetFloat("x", direction.x);
             animator.SetFloat("z", direction.z);
+            animator.SetFloat("y", y);
 
-            string trigger =
-                !isOnStair && nextIsDownStair ? "MoveStartDown" :
-                isOnStair && !nextIsDownStair ? "MoveEndDown" :
-                "MoveNormal";
 
-            animator.SetTrigger(trigger);
+            animator.SetTrigger("Walk");
 
         }
         public void Move_Competed() => base.IsMoving = false;
