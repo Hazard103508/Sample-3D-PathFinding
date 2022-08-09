@@ -25,19 +25,19 @@ namespace Map.Items
             base.IsMoving = true;
 
             float y =
+                direction.y == -1 && isOnStair && !nextIsStair ? -3 : // termina de bajar la escalera
+                direction.y == -1 && isOnStair && nextIsStair ? -2 : // sigue bajando la escalera
                 direction.y == 0 && !isOnStair && nextIsStair ? -1 : // comienza a bajar la escalera
-                direction.y == -1 && isOnStair && !nextIsStair ? -2 : // termina de bajar la escalera
                 direction.y == 1 && !isOnStair && nextIsStair ? 1 : // comienza a subur la escalera
-                direction.y == 0 && isOnStair && !nextIsStair ? 2 : // termina a subur la escalera
+                direction.y == 1 && isOnStair && nextIsStair ? 2 : // sigue subiendo la escalera
+                direction.y == 0 && isOnStair && !nextIsStair ? 3 : // termina a subur la escalera
                 0;
 
             animator.SetFloat("x", direction.x);
             animator.SetFloat("z", direction.z);
             animator.SetFloat("y", y);
 
-
             animator.SetTrigger("Walk");
-
         }
         public void Move_Competed() => base.IsMoving = false;
         #endregion

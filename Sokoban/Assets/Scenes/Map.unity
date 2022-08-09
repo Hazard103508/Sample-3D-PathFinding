@@ -140,7 +140,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4103933129366675810, guid: f2996f9dac5633b4bb4ff8b56d4ca386, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4103933129366675810, guid: f2996f9dac5633b4bb4ff8b56d4ca386, type: 3}
       propertyPath: m_LocalPosition.z
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 1672392294}
-  mapData: {fileID: 11400000, guid: 9c895ba345f12624eadb1e19fa46182e, type: 2}
+  mapData: {fileID: 11400000, guid: 4a4919e7ea228ae4c9a8e1f5d3f64887, type: 2}
   tileset: {fileID: 11400000, guid: decd556b1fa8507428034717257e3c52, type: 2}
   Loaded:
     m_PersistentCalls:
