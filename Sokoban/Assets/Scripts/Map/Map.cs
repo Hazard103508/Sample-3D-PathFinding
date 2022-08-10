@@ -107,6 +107,9 @@ namespace Map
 
             _pathFinder = new PathFinding.PathFinder(obstacleMatrix);
             _pathFinder.StairsLocations = _stairs;
+
+            var _camera = GameObject.Find("CameraPivot");
+            _camera.transform.position = new Vector3((float)this.mapData.size.width / 2, 0, (float)this.mapData.size.depth / 2);
         }
         /// <summary>
         /// Carga las cajas en el mapa
@@ -165,13 +168,20 @@ namespace Map
 
             Vector3Int targetLocation = tile.transform.position.ToVector3Int() + Vector3Int.up; // el tile seleccionado esta al nivel del suelo, se le aumenta un y+1 para validar que el persona pueda pararse sobre dicho tile
             _path = _pathFinder.FindPath(this.character.transform.position.ToVector3Int(), targetLocation);
-            if (!_path.Any())
-                _path = new List<Vector3Int> { targetLocation };
+            if (_path.Any())
+                HighlightPath();
 
-            HighlightPath();
+            if (!_path.Any())
+            {
+                _path = new List<Vector3Int> { targetLocation };
+                HighlightPath();
+                _path.Clear();
+            }
         }
         private void onTileMouseExit(Tiles.BaseTile tile)
         {
+            _nextPathTile = null;
+
             if (characterIsMoving)
                 return;
 

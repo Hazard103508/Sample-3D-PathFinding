@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -46,7 +44,7 @@ namespace Map.Tiles
 
         #region Protected Methods
         protected virtual void OnHighlighted(bool isHighlighted)
-        { 
+        {
         }
         #endregion
     }

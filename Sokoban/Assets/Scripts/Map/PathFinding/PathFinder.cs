@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using UnityEngine;
 
@@ -197,7 +196,7 @@ namespace Map.PathFinding
             var _stair = StairsLocations.ContainsKey(_stairLocation) ? StairsLocations[_stairLocation] : null;
             if (_stair != null) // si me encuentro parado sobre la escalera solo puedo salir por uno de los extremos
             {
-                if (_stair.entryPointA != destiny && 
+                if (_stair.entryPointA != destiny &&
                     _stair.entryPointB != destiny &&
                     (_stair.entryPointA + Vector3Int.up) != destiny &&
                     (_stair.entryPointB + Vector3Int.up) != destiny)
@@ -208,9 +207,9 @@ namespace Map.PathFinding
             _stair = StairsLocations.ContainsKey(_stairLocation) ? StairsLocations[_stairLocation] : null;
             if (_stair != null) // si voy a entrar en la escalera debe ser por uno de los extremos
             {
-                if (_stair.entryPointA != current && 
-                    _stair.entryPointB != current && 
-                    (_stair.entryPointA + Vector3Int.up) != current && 
+                if (_stair.entryPointA != current &&
+                    _stair.entryPointB != current &&
+                    (_stair.entryPointA + Vector3Int.up) != current &&
                     (_stair.entryPointB + Vector3Int.up) != current)
                     return false;
             }
